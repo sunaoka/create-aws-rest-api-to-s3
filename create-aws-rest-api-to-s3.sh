@@ -205,6 +205,20 @@ aws apigateway put-integration-response \
                          method.response.header.Content-Type=integration.response.header.Content-Type' \
   --response-templates '{"application/json": ""}'
 
+aws apigateway put-integration-response \
+  --rest-api-id "${APIGATEWAY_REST_API_ID}" \
+  --resource-id "${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}" \
+  --http-method GET \
+  --status-code 400 \
+  --selection-pattern '4\d{2}'
+
+aws apigateway put-integration-response \
+  --rest-api-id "${APIGATEWAY_REST_API_ID}" \
+  --resource-id "${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}" \
+  --http-method GET \
+  --status-code 500 \
+  --selection-pattern '5\d{2}'
+
 cat <<EOF
 +----------------------------+
 |   Process Successful !!!   |
