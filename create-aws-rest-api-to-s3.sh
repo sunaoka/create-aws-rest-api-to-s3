@@ -69,6 +69,8 @@ IAM_ROLE_ID=$(
     --assume-role-policy-document file:///tmp/"${IAM_ROLE_NAME}"-policy.json | jq -r '.Role.RoleId'
 )
 
+rm /tmp/"${IAM_ROLE_NAME}"-policy.json
+
 # Check
 if [[ -z $IAM_ROLE_ID ]]; then
   echo "Could not get ${IAM_ROLE_ID}."
