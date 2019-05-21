@@ -172,15 +172,13 @@ aws apigateway put-method-response \
   --rest-api-id "${APIGATEWAY_REST_API_ID}" \
   --resource-id "${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}" \
   --http-method GET \
-  --status-code 400 \
-  --response-models '{"application/json": "Empty"}'
+  --status-code 400
 
 aws apigateway put-method-response \
   --rest-api-id "${APIGATEWAY_REST_API_ID}" \
   --resource-id "${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}" \
   --http-method GET \
-  --status-code 500 \
-  --response-models '{"application/json": "Empty"}'
+  --status-code 500
 
 aws apigateway put-integration \
   --rest-api-id "${APIGATEWAY_REST_API_ID}" \
