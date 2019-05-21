@@ -47,7 +47,7 @@ EOF
 
 #----IAM-------------------------------------------
 # First create the initial policy file of "API Gateway"
-cat <<'EOF' >/tmp/${IAM_ROLE_NAME}-policy.json
+cat <<'EOF' >/tmp/"${IAM_ROLE_NAME}"-policy.json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -66,12 +66,12 @@ EOF
 IAM_ROLE_ID=$(
   aws iam create-role \
     --role-name "${IAM_ROLE_NAME}" \
-    --assume-role-policy-document file:///tmp/${IAM_ROLE_NAME}-policy.json | jq -r '.Role.RoleId'
+    --assume-role-policy-document file:///tmp/"${IAM_ROLE_NAME}"-policy.json | jq -r '.Role.RoleId'
 )
 
 # Check
 if [[ -z $IAM_ROLE_ID ]]; then
-  echo 'Could not get ${IAM_ROLE_ID}.'
+  echo "Could not get ${IAM_ROLE_ID}."
   exit 255
 fi
 
@@ -86,7 +86,7 @@ aws iam attach-role-policy \
 
 #---S3---------------------------------------------
 # Create S3 bucket
-aws s3 mb s3://${S3_BUCKET_NAME}
+aws s3 mb s3://"${S3_BUCKET_NAME}"
 
 #---API Gateway[REST API]--------------------------
 # Save the REST API ID
@@ -97,7 +97,7 @@ APIGATEWAY_REST_API_ID=$(
 
 # Check
 if [[ -z $APIGATEWAY_REST_API_ID ]]; then
-  echo 'Could not get ${APIGATEWAY_REST_API_ID}.'
+  echo "Could not get ${APIGATEWAY_REST_API_ID}."
   exit 255
 fi
 
@@ -131,7 +131,7 @@ APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY=$(
 
 # Check
 if [[ -z $APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY ]]; then
-  echo 'Could not get ${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}.'
+  echo "Could not get ${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}."
   exit 255
 fi
 
@@ -153,8 +153,7 @@ aws apigateway put-method \
   --http-method GET \
   --authorization-type NONE \
   --request-parameters "method.request.path.s3_bucket_name=true,method.request.path.s3_object_key=true" \
-  --api-key-required \
-  ;
+  --api-key-required
 
 #---API Gateway[Method Request/Response]-----------
 aws apigateway put-method-response \
@@ -169,7 +168,7 @@ aws apigateway update-method-response \
   --resource-id "${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}" \
   --http-method GET \
   --status-code 200 \
-  --patch-operations op="add",path="/responseParameters/method.response.header.Content-Type",value="false"
+  --patch-operations 'op="add",path="/responseParameters/method.response.header.Content-Type",value="false"'
 
 aws apigateway put-method-response \
   --rest-api-id "${APIGATEWAY_REST_API_ID}" \
@@ -192,10 +191,10 @@ aws apigateway put-integration \
   --type AWS \
   --integration-http-method GET \
   --uri "arn:aws:apigateway:${AWS_DEFAULT_REGION}:s3:path/{s3_bucket_name}/{s3_object_key}" \
-  --credentials $(
+  --credentials "$(
     aws iam get-role \
       --role-name "${IAM_ROLE_NAME}" | jq -r '.Role.Arn'
-  ) \
+  )" \
   --request-parameters 'integration.request.path.s3_bucket_name=method.request.path.s3_bucket_name,integration.request.path.s3_object_key=method.request.path.s3_object_key'
 
 aws apigateway put-integration-response \
