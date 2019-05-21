@@ -163,14 +163,10 @@ aws apigateway put-method-response \
   --resource-id "${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}" \
   --http-method GET \
   --status-code 200 \
+  --response-parameters "method.response.header.Timestamp=true,
+                         method.response.header.Content-Length=true,
+                         method.response.header.Content-Type=true" \
   --response-models '{"application/json": "Empty"}'
-
-aws apigateway update-method-response \
-  --rest-api-id "${APIGATEWAY_REST_API_ID}" \
-  --resource-id "${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}" \
-  --http-method GET \
-  --status-code 200 \
-  --patch-operations 'op="add",path="/responseParameters/method.response.header.Content-Type",value="false"'
 
 aws apigateway put-method-response \
   --rest-api-id "${APIGATEWAY_REST_API_ID}" \
@@ -203,7 +199,10 @@ aws apigateway put-integration-response \
   --rest-api-id "${APIGATEWAY_REST_API_ID}" \
   --resource-id "${APIGATEWAY_RESOURCE_ID_S3_OBJECT_KEY}" \
   --http-method GET \
-  --status-code 200 \
+  --status-code 200  \
+  --response-parameters 'method.response.header.Timestamp=integration.response.header.Date,
+                         method.response.header.Content-Length=integration.response.header.Content-Length,
+                         method.response.header.Content-Type=integration.response.header.Content-Type' \
   --response-templates '{"application/json": ""}'
 
 cat <<EOF
