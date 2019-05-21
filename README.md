@@ -33,6 +33,7 @@ These are used for naming when creating "AWS" objects.
 * `S3_BUCKET_NAME`
 * `APIGATEWAY_RESTAPI_NAME`
 * `AWS_DEFAULT_REGION`
+* `AWS_PROFILE`
 
 Alternatively, add the environment variable settings at the beginning of the command as follows:
 
@@ -52,6 +53,7 @@ Environmental Variables are follows:
 * `S3_BUCKET_NAME`
 * `APIGATEWAY_RESTAPI_NAME`
 * `AWS_DEFAULT_REGION`
+* `AWS_PROFILE`
 
 
 ## Relase Note

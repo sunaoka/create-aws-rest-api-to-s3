@@ -26,6 +26,7 @@ IAM_ROLE_NAME="${IAM_ROLE_NAME:-ANY_IAM_ROLE_NAME}"
 S3_BUCKET_NAME=${S3_BUCKET_NAME:-ANY_S3_BUCKET_NAME}
 APIGATEWAY_RESTAPI_NAME=${APIGATEWAY_RESTAPI_NAME:-ANY_APIGATEWAY_RESTAPI_NAME}
 AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-ap-northeast-1}
+AWS_PROFILE=${AWS_PROFILE:-default}
 
 cat <<EOF
 The following tools are required to run this script:
@@ -39,6 +40,7 @@ Run the script with the following environment variable values:
 * S3_BUCKET_NAME="${S3_BUCKET_NAME}"
 * APIGATEWAY_RESTAPI_NAME="${APIGATEWAY_RESTAPI_NAME}"
 * AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}"
+* AWS_PROFILE="${AWS_PROFILE}"
 
 
 EOF
@@ -215,25 +217,35 @@ aws apigateway create-deployment \\
   --rest-api-id "${APIGATEWAY_REST_API_ID}" \\
   --stage-name "prod" \\
   --stage-description 'Production' \\
-  --description 'Production'
+  --description 'Production' \\
+  --region "${AWS_DEFAULT_REGION}" \\
+  --profile "${AWS_PROFILE}"
 ----------------------------------------
 
 If you want to all, please execute the following command.
 
 ----------------------------------------
 aws apigateway delete-rest-api \\
-  --rest-api-id "${APIGATEWAY_REST_API_ID}"
+  --rest-api-id "${APIGATEWAY_REST_API_ID}" \\
+  --region "${AWS_DEFAULT_REGION}" \\
+  --profile "${AWS_PROFILE}"
 
 aws s3 rb \\
-  --force "s3://${S3_BUCKET_NAME}"
+  --force "s3://${S3_BUCKET_NAME}" \\
+  --region "${AWS_DEFAULT_REGION}" \\
+  --profile "${AWS_PROFILE}"
 
 aws iam detach-role-policy \\
   --role-name ${IAM_ROLE_NAME} \\
-  --policy-arn "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  --policy-arn "arn:aws:iam::aws:policy/AmazonS3FullAccess" \\
+  --region "${AWS_DEFAULT_REGION}" \\
+  --profile "${AWS_PROFILE}"
 
 aws iam delete-role \\
   --role-name \\
-  "${IAM_ROLE_NAME}"
+  "${IAM_ROLE_NAME}" \\
+  --region "${AWS_DEFAULT_REGION}" \\
+  --profile "${AWS_PROFILE}"
 ----------------------------------------
 
 Let's have a nice day!
